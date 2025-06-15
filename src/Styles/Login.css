@@ -1,0 +1,112 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.login-background {
+  background-image: url(https://www.google.com/search?q=fitness+website+background+images&client=firefox-b-d&sca_esv=e3279a5cc9de4c92&udm=2&biw=1536&bih=779&sxsrf=AE3TifOdguRn87QeMqTgCV2vCJiM9V8eqQ%3A1749917396663&ei=1J5NaPShKPqTseMPvqbp4Qg&oq=fitness+website+back&gs_lp=EgNpbWciFGZpdG5lc3Mgd2Vic2l0ZSBiYWNrKgIIADIFEAAYgAQyBBAAGB5Igj1QpwJY2jNwAngAkAEAmAF_oAHoD6oBBDAuMTi4AQPIAQD4AQGYAg6gAo0LwgIGEAAYBxgewgIKEAAYgAQYQxiKBcICBxAjGCcYyQLCAgYQABgFGB7CAgYQABgIGB6YAwCIBgGSBwQyLjEyoAf8YbIHBDAuMTK4B4QLwgcGMC4zLjExyAc4&sclient=img#vhid=ewKvzgn367Q3jM&vssid=mosaic); 
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px #0f0;
+}
+
+.login-card {
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0.5rem 0;
+}
+
+.login-card p {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+  border: none;
+  width: 100%;
+  background-color: #444;
+  color: #fff;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+button {
+  padding: 0.75rem;
+  background-color: #27ae60;
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #555;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.signup-link a {
+  color: #2ecc71;
+  text-decoration: none;
+}
+
+footer {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #ccc;
+}
