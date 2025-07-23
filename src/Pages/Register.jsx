@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Styles/Login.css';
+import logo from '../assets/image/fitxLogo.jpg'
+import BgImage from '../assets/image/gymbackground.jpg'
 
 function Register() {
   const navigate = useNavigate();
@@ -11,9 +13,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Simple image paths from public folder
-  const gymBackground = '/images/gym-background.jpg';
-  const fitxLogo = '/images/FitxLogo.jpg';
 
   const {
     register,
@@ -116,7 +115,7 @@ function Register() {
     <div 
       className="auth-background" 
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.8)), url(${gymBackground})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.8)), url(${BgImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
@@ -128,10 +127,9 @@ function Register() {
             <div 
               className="fitx-logo"
               style={{
-                backgroundImage: `url(${fitxLogo})`,
+                backgroundImage: `url(${logo})`,
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
               }}
             ></div>
             <h1 className="auth-title">JOIN FITX</h1>
