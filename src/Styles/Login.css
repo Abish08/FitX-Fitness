@@ -1,176 +1,142 @@
-/* FitX Fitness Authentication Pages - Professional with Gym Background */
+/* Updated Login.css - Replace your existing styles with these */
+
 .auth-background {
   min-height: 100vh;
-  /* Replace 'gym-background.jpg' with your actual image path */
-  background: 
-    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.8)),
-    url('../assets/gym-background.jpg') center/cover no-repeat,
-    #1a1a1a; /* Fallback color */
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), 
+              url('../assets/image/gymbackground.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  position: relative;
-  overflow: hidden;
 }
 
-/* Add subtle overlay effects to enhance the gym atmosphere */
-.auth-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 30% 20%, rgba(220, 38, 127, 0.1) 0%, transparent 30%),
-    radial-gradient(circle at 70% 80%, rgba(220, 38, 127, 0.1) 0%, transparent 30%),
-    linear-gradient(45deg, transparent 30%, rgba(0, 0, 0, 0.1) 70%);
-  pointer-events: none;
-  animation: backgroundPulse 8s ease-in-out infinite;
+/* Alternative approach using CSS variables for dynamic backgrounds */
+.auth-background.with-gym-bg {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), 
+                    var(--gym-background-url);
 }
 
-@keyframes backgroundPulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
+.fitx-logo {
+  width: 80px;
+  height: 80px;
+  background: url('../assets/image/FitxLogo.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  border: 3px solid #ff6b35;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+/* Alternative: If you want to use <img> tag instead of background */
+.fitx-logo-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  border: 3px solid #ff6b35;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+  object-fit: cover;
+  display: block;
 }
 
 .auth-container {
   width: 100%;
   max-width: 450px;
-  position: relative;
-  z-index: 1;
+  z-index: 10;
 }
 
 .auth-card {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 3rem 2.5rem;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  animation: fadeInUp 0.8s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease-in-out infinite;
 }
 
-/* Header with FitX Logo */
+@keyframes gradientShift {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -200% 0; }
+}
+
 .auth-header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.fitx-logo {
-  width: 127px;
-  height: 100px;
-  margin: 0 auto 1.5rem;
-  background: transparent; /* Remove gradient background to show the actual logo */
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  animation: logoFloat 3s ease-in-out infinite;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  
-}
-
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-8px) scale(1.05); }
-}
-
-/* Remove the ::before pseudo-element since we're using the actual logo */
-.fitx-logo::before {
-  display: none;
-}
-
 .auth-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #1a1a1a, #333);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0.5rem 0;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: 2px;
 }
 
 .auth-subtitle {
-  color: #666;
+  color: #7f8c8d;
   font-size: 1rem;
-  margin-bottom: 0;
-  animation: slideInRight 0.8s ease-out 0.2s both;
+  margin: 0;
+  font-weight: 400;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* Forms */
 .auth-form {
-  animation: fadeIn 1s ease-out 0.3s both;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .form-label {
-  display: block;
-  margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #333;
-  font-size: 0.95rem;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
 }
 
 .form-input, .form-select {
-  width: 100%;
-  padding: 0.875rem 1rem;
-  border: 2px solid #e0e0e0;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e0e6ed;
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: #ffffff;
-  box-sizing: border-box;
+  background: #f8f9fa;
+  font-family: inherit;
 }
 
 .form-input:focus, .form-select:focus {
   outline: none;
-  border-color: #333;
-  box-shadow: 0 0 0 4px rgba(51, 51, 51, 0.1);
+  border-color: #ff6b35;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
   transform: translateY(-2px);
 }
 
-.form-input::placeholder {
-  color: #999;
-}
-
-.form-input:disabled, .form-select:disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-/* Password input with toggle */
 .password-input-container {
   position: relative;
   display: flex;
@@ -178,275 +144,254 @@
 }
 
 .password-input {
-  padding-right: 3rem !important;
+  flex: 1;
+  padding-right: 3rem;
 }
 
 .password-toggle-btn {
   position: absolute;
-  right: 0.75rem;
+  right: 1rem;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.25rem;
   font-size: 1.2rem;
-  color: #666;
-  transition: all 0.3s ease;
-  z-index: 1;
-  margin: 0 !important;
-  height: auto;
-  width: auto;
-  border-radius: 6px;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
 }
 
-.password-toggle-btn:hover:not(:disabled) {
-  background: rgba(51, 51, 51, 0.1) !important;
-  color: #333;
-  transform: none !important;
-  box-shadow: none !important;
+.password-toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-.password-toggle-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Buttons */
 .auth-btn {
-  width: 100%;
-  padding: 0.875rem;
+  padding: 1rem 2rem;
   border: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 1.5rem 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
   color: white;
-  box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 35px rgba(26, 26, 26, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
 }
 
 .btn-primary:disabled {
-  background: #ccc;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
 
-/* Checkbox */
+.btn-secondary {
+  background: #f8f9fa;
+  color: #2c3e50;
+  border: 2px solid #e0e6ed;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #ced4da;
+  transform: translateY(-1px);
+}
+
 .checkbox-group {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
-  margin: 1.5rem 0;
+  margin: 0.5rem 0;
 }
 
 .checkbox-input {
-  width: auto !important;
-  margin: 0;
-  transform: scale(1.2);
-  cursor: pointer;
-  accent-color: #333;
+  margin-top: 0.2rem;
+  accent-color: #ff6b35;
 }
 
 .checkbox-label {
-  margin: 0;
   font-size: 0.9rem;
-  cursor: pointer;
-  line-height: 1.4;
   color: #555;
+  line-height: 1.4;
+  cursor: pointer;
 }
 
-/* Messages */
-.message {
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  text-align: center;
-  animation: slideDown 0.5s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.message-error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #dc2626;
-}
-
-.message-success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #16a34a;
-}
-
-.message-info {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  color: #2563eb;
-}
-
-.field-error {
-  color: #dc2626;
-  font-size: 0.85rem;
-  margin: 0.25rem 0;
-  display: block;
-}
-
-/* Navigation Links */
 .auth-links {
   text-align: center;
-  margin: 1rem 0;
+  margin-top: 1rem;
 }
 
 .auth-link {
-  color: #333;
+  color: #ff6b35;
   text-decoration: none;
   font-weight: 500;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
+  transition: all 0.2s ease;
   position: relative;
 }
 
 .auth-link:hover {
-  color: #1a1a1a;
-}
-
-.auth-link:hover::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(135deg, #1a1a1a, #333);
-  animation: underlineExpand 0.3s ease-out;
-}
-
-@keyframes underlineExpand {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
-/* Special Elements */
-.email-highlight {
-  background: rgba(51, 51, 51, 0.1);
-  color: #333;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin: 1rem 0;
-  font-weight: 600;
-  text-align: center;
-  border: 1px solid rgba(51, 51, 51, 0.2);
+  color: #e55a2b;
+  text-decoration: underline;
 }
 
 .back-link {
   display: block;
-  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
-  color: white;
-  padding: 0.875rem;
-  border-radius: 12px;
+  margin-top: 1rem;
+  color: #7f8c8d;
   text-decoration: none;
-  font-weight: 600;
+  font-size: 0.9rem;
   text-align: center;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  transition: color 0.2s ease;
 }
 
 .back-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(26, 26, 26, 0.3);
+  color: #ff6b35;
 }
 
-/* Success Page */
+.message {
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.message-error {
+  background-color: #ffe6e6;
+  color: #c62828;
+  border: 1px solid #ffcccb;
+}
+
+.message-info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+}
+
+.message-success {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.field-error {
+  color: #c62828;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e6ed;
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* Success Page Styles */
 .success-container {
   text-align: center;
-  animation: fadeIn 0.8s ease-out;
+  padding: 2rem 0;
 }
 
 .success-icon {
   font-size: 4rem;
-  color: #16a34a;
-  margin-bottom: 1rem;
-  animation: bounceIn 1s ease-out;
-}
-
-@keyframes bounceIn {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.05); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
+  margin: 1rem 0;
 }
 
 .success-title {
-  color: #16a34a;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin: 1rem 0;
   font-weight: 700;
-}
-
-/* Loading Animation */
-.loading-container {
-  text-align: center;
-  padding: 2rem 0;
 }
 
 .loading-bar {
   width: 100%;
   height: 6px;
-  background: #e0e0e0;
+  background-color: #e0e6ed;
   border-radius: 3px;
   overflow: hidden;
-  margin-top: 1.5rem;
+  margin: 2rem 0;
 }
 
 .loading-progress {
   height: 100%;
-  background: linear-gradient(90deg, #1a1a1a, #333);
+  background: linear-gradient(90deg, #ff6b35, #f7931e);
   border-radius: 3px;
-  animation: loading 2s ease-in-out;
+  animation: loading 3s ease-in-out forwards;
 }
 
 @keyframes loading {
-  0% { width: 0%; }
-  100% { width: 100%; }
+  from { width: 0%; }
+  to { width: 100%; }
 }
 
-/* Footer */
-.auth-footer {
-  text-align: center;
+.text-muted {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.email-highlight {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin: 1rem 0;
+  display: inline-block;
+}
+
+/* Admin specific styles */
+.admin-badge {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-left: 0.5rem;
+}
+
+.admin-link {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+/* Forgot Password specific styles */
+.forgot-password-actions {
   margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e0e0e0;
-  color: #666;
-  font-size: 0.85rem;
+}
+
+.forgot-password-security {
+  margin-top: 2rem;
+}
+
+/* Auth logo for icons */
+.auth-logo {
+  font-size: 4rem;
+  margin: 0 auto 1rem;
+  display: block;
+  text-align: center;
 }
 
 /* Responsive Design */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .auth-background {
     padding: 1rem;
   }
@@ -455,16 +400,11 @@
     padding: 2rem 1.5rem;
   }
   
-  .fitx-logo {
-    width: 60px;
-    height: 60px;
-  }
-  
   .auth-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
   
-  .auth-subtitle {
-    font-size: 0.9rem;
+  .form-input, .form-select {
+    padding: 0.9rem 1rem;
   }
 }

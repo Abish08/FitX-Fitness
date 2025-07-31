@@ -1,301 +1,357 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // FIXED: Use AuthContext
+import DashboardCalendar from './DashboardCalendar';
 import '../Styles/Dashboard.css';
 
 const Dashboard = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
   const navigate = useNavigate();
-  const [activeDay, setActiveDay] = useState('SUN');
+  const { user, logout, isAuthenticated, isLoading, checkAuth } = useAuth(); // FIXED: Use auth context
+  const [stats, setStats] = useState({
+    programCompletion: 68,
+    caloriesBurned: 1234,
+    workoutsThisMonth: 15,
+    avgWorkoutTime: 45
+  });
 
+  // FIXED: Use AuthContext instead of localStorage
+  useEffect(() => {
+    // Check authentication status
+    if (!isAuthenticated && !isLoading) {
+      // Try to load user if there's a token
+      if (localStorage.getItem('token')) {
+        checkAuth();
+      } else {
+        navigate('/login');
+      }
+    }
+  }, [isAuthenticated, isLoading, navigate, checkAuth]);
+
+  // FIXED: Handle logout using AuthContext
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
+    logout();
+    navigate('/login');
   };
 
-  const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  const currentDate = new Date();
-  const currentDay = currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  // Navigation handlers
+  const navigateTo = (path) => {
+    navigate(path);
+  };
 
-  // Different content based on user role
-  const isAdmin = user?.role === 'admin';
+  // Get greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  };
 
-  const workoutCategories = [
-    'Workout Plans',
-    'Exercise Library', 
-    'Progress Tracking',
-    'Nutrition Plans',
-    'Membership Plans',
-    'User Management',
-    'Analytics Dashboard'
-  ];
+  // FIXED: Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading your dashboard...</p>
+      </div>
+    );
+  }
 
-  const featuredContent = [
-    {
-      title: "Full Body HIIT Challenge",
-      subtitle: "FEATURED PROGRAM",
-      description: "4-week intensive program to burn fat and build strength",
-      image: "🔥",
-      difficulty: "Intermediate",
-      duration: "4 weeks",
-      participants: "1,234 active"
-    },
-    {
-      title: "Beginner's Strength Journey",
-      subtitle: "STRENGTH BUILDING",
-      description: "Perfect introduction to weight training fundamentals",
-      image: "💪",
-      difficulty: "Beginner",
-      duration: "6 weeks",
-      participants: "892 active"
-    },
-    {
-      title: "Flexibility & Recovery",
-      subtitle: "WELLNESS",
-      description: "Improve mobility and reduce injury risk",
-      image: "🧘",
-      difficulty: "All Levels",
-      duration: "3 weeks",
-      participants: "567 active"
-    }
-  ];
-
-  const todaysSchedule = isAdmin ? [
-    { time: "09:00 AM", activity: "Review User Analytics", type: "Admin Task", status: "pending" },
-    { time: "11:00 AM", activity: "Update Exercise Database", type: "Content Management", status: "pending" },
-    { time: "02:00 PM", activity: "Member Support Session", type: "User Management", status: "scheduled" },
-    { time: "04:00 PM", activity: "Create New Workout Plan", type: "Content Creation", status: "pending" }
-  ] : [
-    { time: "07:00 AM", activity: "Morning Cardio Blast", type: "HIIT Training", status: "completed" },
-    { time: "12:00 PM", activity: "Nutrition Check-in", type: "Meal Planning", status: "pending" },
-    { time: "06:00 PM", activity: "Strength Training", type: "Weight Training", status: "scheduled" },
-    { time: "08:00 PM", activity: "Progress Photo Upload", type: "Tracking", status: "pending" }
-  ];
-
-  const quickStats = isAdmin ? [
-    { label: 'Total Users', value: '2,847', icon: '👥', change: '+12%' },
-    { label: 'Active Programs', value: '43', icon: '📋', change: '+5%' },
-    { label: 'This Month Revenue', value: '$28,450', icon: '💰', change: '+18%' },
-    { label: 'Completion Rate', value: '87%', icon: '📊', change: '+3%' }
-  ] : [
-    { label: 'Workouts This Week', value: '5', icon: '💪', change: '+2' },
-    { label: 'Current Streak', value: '12 Days', icon: '🔥', change: '+1' },
-    { label: 'Weight Progress', value: '-3.2 lbs', icon: '⚖️', change: '-0.5' },
-    { label: 'Program Completion', value: '68%', icon: '🎯', change: '+15%' }
-  ];
+  // FIXED: Redirect if not authenticated
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Redirecting to login...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="dashboard-container">
-      {/* Navigation Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <div className="header-logo">
-            <span className="header-logo-icon">💪</span>
-            <h1 className="header-title">FitX Fitness</h1>
+    <div className="dashboard">
+      {/* Enhanced Navigation Header */}
+      <header className="dashboard-header-nav">
+        <div className="nav-container">
+          {/* Brand Section */}
+          <div className="nav-brand">
+            <div className="brand-icon">🦊</div>
+            <div className="brand-text">
+              <h1 className="brand-title">FitX Fitness</h1>
+              <span className="brand-subtitle">Transform Your Life</span>
+            </div>
           </div>
-          
-          <nav className="header-nav">
-            <a href="#workouts" className="nav-link">Workouts</a>
-            <a href="#programs" className="nav-link">Programs</a>
-            <a href="#nutrition" className="nav-link">Nutrition</a>
-            <a href="#community" className="nav-link">Community</a>
-            {isAdmin && <a href="#admin" className="nav-link admin-link">Admin Panel</a>}
+
+          {/* Navigation Menu */}
+          <nav className="nav-menu">
+            <button 
+              onClick={() => navigateTo('/workout-plans')} 
+              className="nav-item"
+              title="Browse Workouts"
+            >
+              <span className="nav-icon">💪</span>
+              <span className="nav-text">Workouts</span>
+            </button>
+            <button 
+              onClick={() => navigateTo('/exercise-library')} 
+              className="nav-item"
+              title="Exercise Library"
+            >
+              <span className="nav-icon">📺</span>
+              <span className="nav-text">Exercises</span>
+            </button>
+            <button 
+              onClick={() => navigateTo('/progress-tracking')} 
+              className="nav-item"
+              title="Track Progress"
+            >
+              <span className="nav-icon">📈</span>
+              <span className="nav-text">Progress</span>
+            </button>
+            <button 
+              onClick={() => navigateTo('/user-profile')} 
+              className="nav-item"
+              title="User Profile"
+            >
+              <span className="nav-icon">👤</span>
+              <span className="nav-text">Profile</span>
+            </button>
           </nav>
 
-          <div className="header-user">
-            <span className="user-welcome">Hi {user?.name || 'User'}!</span>
-            {isAdmin && <span className="admin-badge">Admin</span>}
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+          {/* User Section - FIXED: Use user from AuthContext */}
+          <div className="nav-user-section">
+            <div className="user-info">
+              <div className="user-avatar">
+                {(user.firstName || user.username || 'U').charAt(0).toUpperCase()}
+              </div>
+              <div className="user-details">
+                <span className="user-name">
+                  Welcome, {user.firstName || user.username || 'User'}
+                </span>
+                <span className="user-status">{user.role === 'admin' ? 'Admin' : 'Premium Member'}</span>
+              </div>
+            </div>
+            <button onClick={handleLogout} className="logout-btn">
+              <span className="logout-icon">🚪</span>
+              <span className="logout-text">Logout</span>
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="dashboard-layout">
-        {/* Sidebar */}
-        <aside className="dashboard-sidebar">
-          <div className="sidebar-section">
-            <h3>Quick Access</h3>
-            <ul className="sidebar-menu">
-              {workoutCategories.map((category, index) => (
-                <li key={index} className="sidebar-item">
-                  <a href={`#${category.toLowerCase().replace(/\s+/g, '-')}`} className="sidebar-link">
-                    {category}
-                  </a>
-                </li>
-              ))}
-            </ul>
+      {/* Main Content */}
+      <main className="dashboard-content">
+        {/* Hero Section - FIXED: Use user from AuthContext */}
+        <section className="hero-section">
+          <div className="hero-content">
+            <h2 className="hero-title">
+              {getGreeting()}, {user.firstName || user.username || 'User'}! 👋
+            </h2>
+            <p className="hero-subtitle">
+              Here's your fitness overview for today. Keep pushing towards your goals!
+            </p>
           </div>
+          <div className="hero-actions">
+            <button 
+              onClick={() => navigateTo('/workout-plans')} 
+              className="cta-button primary"
+            >
+              <span className="cta-icon">🔥</span>
+              <span className="cta-text">Start Workout</span>
+            </button>
+            <button 
+              onClick={() => navigateTo('/progress-tracking')} 
+              className="cta-button secondary"
+            >
+              <span className="cta-icon">📊</span>
+              <span className="cta-text">View Progress</span>
+            </button>
+          </div>
+        </section>
 
-          <div className="sidebar-section">
-            <h3>My Fitness</h3>
-            <div className="fitness-summary">
-              <div className="summary-item">
-                <span className="summary-label">Current Weight</span>
-                <span className="summary-value">165 lbs</span>
+        {/* Stats Section */}
+        <section className="stats-section">
+          <h3 className="section-title">Today's Overview</h3>
+          <div className="stats-grid">
+            <div className="stat-card primary">
+              <div className="stat-icon">🎯</div>
+              <div className="stat-content">
+                <h3>{stats.programCompletion}%</h3>
+                <p>Program Completion</p>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{width: `${stats.programCompletion}%`}}
+                  ></div>
+                </div>
               </div>
-              <div className="summary-item">
-                <span className="summary-label">Goal Weight</span>
-                <span className="summary-value">155 lbs</span>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon">🔥</div>
+              <div className="stat-content">
+                <h3>{stats.caloriesBurned.toLocaleString()}</h3>
+                <p>Calories Burned</p>
+                <span className="stat-change positive">+12% from yesterday</span>
               </div>
-              <div className="summary-item">
-                <span className="summary-label">BMI</span>
-                <span className="summary-value">23.4</span>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon">💪</div>
+              <div className="stat-content">
+                <h3>{stats.workoutsThisMonth}</h3>
+                <p>Workouts This Month</p>
+                <span className="stat-change positive">+3 from last month</span>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon">⏱️</div>
+              <div className="stat-content">
+                <h3>{stats.avgWorkoutTime}m</h3>
+                <p>Avg Workout Time</p>
+                <span className="stat-change neutral">Same as last week</span>
               </div>
             </div>
           </div>
-        </aside>
+        </section>
 
-        {/* Main Content */}
-        <main className="dashboard-main">
-          {/* Welcome Banner */}
-          <section className="welcome-banner">
-            <div className="banner-content">
-              <h2>Welcome back, {user?.name}! 💪</h2>
-              <p>{isAdmin ? 'Manage your fitness platform and help users achieve their goals.' : 'Ready to crush your fitness goals today?'}</p>
-            </div>
-            <div className="banner-action">
-              <button className="cta-button">
-                {isAdmin ? 'View Analytics Dashboard' : 'Start Today\'s Workout'}
+        {/* Enhanced Calendar Section */}
+        <DashboardCalendar />
+
+        {/* Two Column Layout */}
+        <div className="dashboard-grid">
+          {/* Fitness Status */}
+          <div className="fitness-status">
+            <div className="section-header">
+              <h3>My Fitness Status</h3>
+              <button 
+                onClick={() => navigateTo('/progress-tracking')} 
+                className="view-more-btn"
+              >
+                View Details
               </button>
             </div>
-          </section>
-
-          {/* Quick Stats */}
-          <section className="stats-section">
-            <div className="stats-grid">
-              {quickStats.map((stat, index) => (
-                <div key={index} className="stat-card">
-                  <div className="stat-header">
-                    <span className="stat-icon">{stat.icon}</span>
-                    <span className="stat-change positive">{stat.change}</span>
-                  </div>
-                  <div className="stat-content">
-                    <div className="stat-value">{stat.value}</div>
-                    <div className="stat-label">{stat.label}</div>
+            
+            <div className="status-grid">
+              <div className="status-item">
+                <div className="status-icon">⚖️</div>
+                <div className="status-info">
+                  <div className="status-label">Current Weight</div>
+                  <div className="status-value">165 lbs</div>
+                  <div className="status-progress">
+                    <span className="progress-text">10 lbs to goal</span>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="status-item">
+                <div className="status-icon">🎯</div>
+                <div className="status-info">
+                  <div className="status-label">Goal Weight</div>
+                  <div className="status-value">155 lbs</div>
+                  <div className="status-progress">
+                    <span className="progress-text">Target: Dec 2025</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="status-item">
+                <div className="status-icon">📊</div>
+                <div className="status-info">
+                  <div className="status-label">BMI</div>
+                  <div className="status-value">23.4</div>
+                  <div className="status-progress">
+                    <span className="progress-text status-good">Normal Range</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="status-item">
+                <div className="status-icon">💧</div>
+                <div className="status-info">
+                  <div className="status-label">Water Intake</div>
+                  <div className="status-value">6/8 glasses</div>
+                  <div className="status-progress">
+                    <span className="progress-text">2 more to go!</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </section>
-
-          <div className="content-grid">
-            {/* This Week Schedule */}
-            <section className="schedule-section">
-              <div className="section-header">
-                <h3>This Week</h3>
-                <button className="view-calendar">Calendar View</button>
-              </div>
-              
-              <div className="week-selector">
-                {daysOfWeek.map((day) => (
-                  <button
-                    key={day}
-                    className={`day-button ${activeDay === day ? 'active' : ''}`}
-                    onClick={() => setActiveDay(day)}
-                  >
-                    {day}
-                  </button>
-                ))}
-              </div>
-
-              <div className="schedule-content">
-                <h4>{currentDay} Schedule</h4>
-                {todaysSchedule.length > 0 ? (
-                  <div className="schedule-list">
-                    {todaysSchedule.map((item, index) => (
-                      <div key={index} className={`schedule-item ${item.status}`}>
-                        <div className="schedule-time">{item.time}</div>
-                        <div className="schedule-details">
-                          <div className="schedule-title">{item.activity}</div>
-                          <div className="schedule-type">{item.type}</div>
-                        </div>
-                        <div className={`schedule-status ${item.status}`}>
-                          {item.status}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="empty-schedule">
-                    <p>You have nothing scheduled yet.</p>
-                    <button className="schedule-workout-btn">Schedule a Workout</button>
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* Featured Content */}
-            <section className="featured-section">
-              <div className="section-header">
-                <h3>Featured</h3>
-                <button className="view-all">View All</button>
-              </div>
-              
-              <div className="featured-content">
-                {featuredContent.map((content, index) => (
-                  <div key={index} className="featured-card">
-                    <div className="featured-image">
-                      <span className="featured-icon">{content.image}</span>
-                      <div className="featured-overlay">
-                        <button className="play-button">▶</button>
-                      </div>
-                    </div>
-                    <div className="featured-info">
-                      <div className="featured-subtitle">{content.subtitle}</div>
-                      <h4 className="featured-title">{content.title}</h4>
-                      <p className="featured-description">{content.description}</p>
-                      <div className="featured-meta">
-                        <span className="meta-item">🏷️ {content.difficulty}</span>
-                        <span className="meta-item">⏱️ {content.duration}</span>
-                        <span className="meta-item">👥 {content.participants}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
 
-          {/* Recent Activity */}
-          <section className="activity-section">
-            <h3>Recent Activity</h3>
-            <div className="activity-feed">
-              <div className="activity-item">
-                <div className="activity-icon">🏆</div>
-                <div className="activity-content">
-                  <div className="activity-text">Completed "Full Body HIIT" workout</div>
-                  <div className="activity-time">2 hours ago</div>
+          {/* Featured Programs */}
+          <div className="featured-programs">
+            <div className="section-header">
+              <h3>Featured Programs</h3>
+              <button 
+                onClick={() => navigateTo('/workout-plans')} 
+                className="view-all-btn"
+              >
+                View All Programs
+              </button>
+            </div>
+            
+            <div className="programs-list">
+              <div className="program-card featured">
+                <div className="program-badge">FEATURED</div>
+                <div className="program-icon">🔥</div>
+                <div className="program-content">
+                  <h4>Full Body HIIT Challenge</h4>
+                  <p className="program-details">Intermediate • 4 weeks</p>
+                  <p className="program-participants">1,234 active participants</p>
+                  <div className="program-tags">
+                    <span className="tag">Fat Burn</span>
+                    <span className="tag">Strength</span>
+                  </div>
                 </div>
+                <button 
+                  onClick={() => navigateTo('/workout-plans')} 
+                  className="start-btn"
+                >
+                  Start Now
+                </button>
               </div>
-              <div className="activity-item">
-                <div className="activity-icon">📸</div>
-                <div className="activity-content">
-                  <div className="activity-text">Uploaded progress photo</div>
-                  <div className="activity-time">1 day ago</div>
+
+              <div className="program-card">
+                <div className="program-icon">💪</div>
+                <div className="program-content">
+                  <h4>Beginner's Strength Journey</h4>
+                  <p className="program-details">Beginner • 6 weeks</p>
+                  <p className="program-participants">892 active participants</p>
+                  <div className="program-tags">
+                    <span className="tag">Beginner</span>
+                    <span className="tag">Strength</span>
+                  </div>
                 </div>
+                <button 
+                  onClick={() => navigateTo('/workout-plans')} 
+                  className="start-btn secondary"
+                >
+                  Start
+                </button>
               </div>
-              <div className="activity-item">
-                <div className="activity-icon">🎯</div>
-                <div className="activity-content">
-                  <div className="activity-text">Reached weekly workout goal</div>
-                  <div className="activity-time">2 days ago</div>
+
+              <div className="program-card">
+                <div className="program-icon">🧘</div>
+                <div className="program-content">
+                  <h4>Flexibility & Recovery</h4>
+                  <p className="program-details">All Levels • 3 weeks</p>
+                  <p className="program-participants">567 active participants</p>
+                  <div className="program-tags">
+                    <span className="tag">Recovery</span>
+                    <span className="tag">Mobility</span>
+                  </div>
                 </div>
+                <button 
+                  onClick={() => navigateTo('/workout-plans')} 
+                  className="start-btn secondary"
+                >
+                  Start
+                </button>
               </div>
             </div>
-          </section>
-        </main>
-      </div>
-
-      {/* Footer */}
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <p>© 2025 FitX Fitness. Transform your body, transform your life.</p>
-          <div className="footer-links">
-            <a href="#support">Support</a>
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
           </div>
         </div>
-      </footer>
+      </main>
     </div>
   );
 };

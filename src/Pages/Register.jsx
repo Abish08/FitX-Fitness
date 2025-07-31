@@ -1,106 +1,109 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import '../Styles/Login.css';
-import logo from '../assets/image/fitxLogo.jpg'
-import BgImage from '../assets/image/gymbackground.jpg'
+import FitxLogo from '../assets/image/FitxLogo.jpg';
+import GymBackground from '../assets/image/gymbackground.jpg';
 
-function Register() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+const Register = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    firstName: '',
+    lastName: '',
+    role: 'user'
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+  
+  // Use AuthContext
+  const { register, isLoading, error, clearError, isAuthenticated, user } = useAuth();
 
+  // Set CSS custom property for background image
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--gym-background-url', `url(${GymBackground})`);
+  }, []);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors }
-  } = useForm();
-
-  const password = watch('password');
-
-  const onSubmit = async (data) => {
-    setLoading(true);
-    setError('');
-    
-    setTimeout(() => {
-      // Get existing users
-      const existingUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-      
-      // Check if user already exists
-      const userExists = existingUsers.find(user => 
-        user.email.toLowerCase().trim() === data.email.toLowerCase().trim()
-      );
-      
-      if (userExists) {
-        setError('An account with this email already exists. Please login instead.');
-        setLoading(false);
-        return;
+  // Check if user is already logged in
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (user.role === 'user') {
+        navigate('/dashboard');
       }
-      
-      // Create new user data
-      const newUser = {
-        id: Date.now(), // Simple ID generation
-        name: data.name.trim(),
-        email: data.email.toLowerCase().trim(),
-        password: data.password, // In production, this should be hashed
-        role: 'user', // Always user for this registration
-        fitnessGoal: data.fitnessGoal || '',
-        joinDate: new Date().toISOString(),
-        membershipStatus: 'active',
-        newsletter: data.newsletter || false,
-        profileComplete: false
-      };
-      
-      // Add to users array
-      existingUsers.push(newUser);
-      localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
-      
-      console.log('User registered successfully:', newUser);
-      console.log('All users now:', existingUsers);
-      
-      setSuccess(true);
-      
-      // Redirect to login page after success message
-      setTimeout(() => {
-        navigate('/');
-      }, 2500);
-      
-      setLoading(false);
-    }, 1500);
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Clear errors when user types
+    if (error) clearError();
+    if (passwordError) setPasswordError('');
   };
 
+  // Validate passwords match
+  const validatePasswords = () => {
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
+
+  // Use AuthContext register method
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate passwords match
+    if (!validatePasswords()) {
+      return;
+    }
+
+    console.log('📝 User registration attempt:', formData.email);
+    
+    try {
+      const result = await register({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        role: 'user'
+      });
+
+      if (result.success) {
+        console.log('✅ User registration successful');
+        setSuccess(true);
+        // AuthContext will automatically redirect based on user role
+      } else {
+        console.log('❌ User registration failed:', result.error);
+      }
+    } catch (error) {
+      console.error('❌ User registration error:', error);
+    }
+  };
+
+  // Success page
   if (success) {
     return (
-      <div 
-        className="auth-background" 
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.8)), url(${gymBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
+      <div className="auth-background with-gym-bg">
         <div className="auth-container">
           <div className="auth-card">
             <div className="success-container">
-              <div 
-                className="fitx-logo"
-                style={{
-                  backgroundImage: `url(${fitxLogo})`,
-                  backgroundSize: 'contain',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}
-              ></div>
+              <img src={FitxLogo} alt="FitX Logo" className="fitx-logo-img" />
               <div className="success-icon">✅</div>
               <h2 className="success-title">Welcome to FitX!</h2>
               <p>Your account has been created successfully!</p>
-              <p className="text-muted">Redirecting to login page...</p>
+              <p className="text-muted">Redirecting to dashboard...</p>
               <div className="loading-bar">
                 <div className="loading-progress"></div>
               </div>
@@ -112,32 +115,16 @@ function Register() {
   }
 
   return (
-    <div 
-      className="auth-background" 
-      style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.8)), url(${BgImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
-    >
+    <div className="auth-background with-gym-bg">
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <div 
-              className="fitx-logo"
-              style={{
-                backgroundImage: `url(${logo})`,
-                backgroundSize: 'contain',
-                backgroundPosition: 'center',
-              }}
-            ></div>
-            <h1 className="auth-title">JOIN FITX</h1>
-            <p className="auth-subtitle">Start your transformation journey today</p>
+            <img src={FitxLogo} alt="FitX Logo" className="fitx-logo-img" />
+            <h1 className="auth-title">Join FitX</h1>
+            <p className="auth-subtitle">Create your fitness journey account</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
-            {/* Error Message */}
+          <form onSubmit={handleSubmit} className="auth-form">
             {error && (
               <div className="message message-error">
                 {error}
@@ -145,164 +132,158 @@ function Register() {
             )}
 
             <div className="form-group">
-              <label className="form-label">Full Name *</label>
+              <label className="form-label">Username</label>
               <input
                 type="text"
-                {...register('name', { 
-                  required: 'Full name is required',
-                  minLength: { value: 2, message: 'Name must be at least 2 characters' },
-                  maxLength: { value: 50, message: 'Name must be less than 50 characters' },
-                  pattern: {
-                    value: /^[a-zA-Z\s]+$/,
-                    message: 'Name can only contain letters and spaces'
-                  }
-                })}
-                placeholder="Enter your full name"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                placeholder="Choose a unique username"
                 className="form-input"
-                disabled={loading}
+                required
+                disabled={isLoading}
               />
-              {errors.name && <span className="field-error">{errors.name.message}</span>}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group">
+                <label className="form-label">First Name</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  placeholder="First name"
+                  className="form-input"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  placeholder="Last name"
+                  className="form-input"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
             </div>
 
             <div className="form-group">
-              <label className="form-label">Email Address *</label>
+              <label className="form-label">Email Address</label>
               <input
                 type="email"
-                {...register('email', { 
-                  required: 'Email address is required',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Please enter a valid email address'
-                  }
-                })}
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 placeholder="Enter your email address"
                 className="form-input"
-                disabled={loading}
+                required
+                disabled={isLoading}
               />
-              {errors.email && <span className="field-error">{errors.email.message}</span>}
             </div>
 
             <div className="form-group">
-              <label className="form-label">Password *</label>
+              <label className="form-label">Password</label>
               <div className="password-input-container">
                 <input
                   type={showPassword ? "text" : "password"}
-                  {...register('password', {
-                    required: 'Password is required',
-                    minLength: { value: 6, message: 'Password must be at least 6 characters' },
-                    pattern: {
-                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                      message: 'Password must contain at least one uppercase letter, lowercase letter, and number'
-                    }
-                  })}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   placeholder="Create a strong password"
                   className="form-input password-input"
-                  disabled={loading}
+                  required
+                  disabled={isLoading}
+                  minLength="6"
                 />
                 <button
                   type="button"
                   className="password-toggle-btn"
                   onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
+                  disabled={isLoading}
                 >
                   {showPassword ? '🙈' : '👁️'}
                 </button>
               </div>
-              {errors.password && <span className="field-error">{errors.password.message}</span>}
             </div>
 
             <div className="form-group">
-              <label className="form-label">Confirm Password *</label>
+              <label className="form-label">Confirm Password</label>
               <div className="password-input-container">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  {...register('confirmPassword', {
-                    required: 'Please confirm your password',
-                    validate: value => value === password || 'Passwords do not match'
-                  })}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  onBlur={validatePasswords}
                   placeholder="Confirm your password"
                   className="form-input password-input"
-                  disabled={loading}
+                  required
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   className="password-toggle-btn"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  disabled={loading}
+                  disabled={isLoading}
                 >
                   {showConfirmPassword ? '🙈' : '👁️'}
                 </button>
               </div>
-              {errors.confirmPassword && <span className="field-error">{errors.confirmPassword.message}</span>}
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Fitness Goal</label>
-              <select 
-                {...register('fitnessGoal')} 
-                className="form-select"
-                disabled={loading}
-              >
-                <option value="">Select your primary goal</option>
-                <option value="weight-loss">Weight Loss</option>
-                <option value="muscle-gain">Muscle Gain</option>
-                <option value="endurance">Build Endurance</option>
-                <option value="strength">Build Strength</option>
-                <option value="general">General Fitness</option>
-                <option value="flexibility">Improve Flexibility</option>
-              </select>
+              {passwordError && (
+                <div className="field-error">{passwordError}</div>
+              )}
             </div>
 
             <div className="checkbox-group">
               <input
                 type="checkbox"
-                {...register('terms', { required: 'You must agree to continue' })}
+                id="terms"
                 className="checkbox-input"
-                disabled={loading}
+                required
+                disabled={isLoading}
               />
-              <label className="checkbox-label">
-                I agree to the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>
-              </label>
-            </div>
-            {errors.terms && <span className="field-error">{errors.terms.message}</span>}
-
-            <div className="checkbox-group">
-              <input
-                type="checkbox"
-                {...register('newsletter')}
-                className="checkbox-input"
-                disabled={loading}
-              />
-              <label className="checkbox-label">
-                Send me workout tips and fitness updates (optional)
+              <label htmlFor="terms" className="checkbox-label">
+                I agree to the <Link to="/terms" className="auth-link">Terms of Service</Link> and{' '}
+                <Link to="/privacy" className="auth-link">Privacy Policy</Link>
               </label>
             </div>
 
-            <button type="submit" disabled={loading} className="auth-btn btn-primary">
-              {loading ? 'Creating Your Account...' : 'Create My FitX Account'}
+            <button 
+              type="submit" 
+              disabled={isLoading || !formData.email || !formData.password || !formData.username || passwordError} 
+              className="auth-btn btn-primary"
+            >
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </button>
 
             <div className="auth-links">
-              Already have an account?{' '}
-              <Link to="/" className="auth-link">
-                <strong>Sign in here</strong>
+              <Link to="/login" className="auth-link">
+                Already have an account? Sign in here
               </Link>
             </div>
 
             <div className="auth-links">
-              <Link to="/admin-register" className="auth-link">
-                🔐 Administrator Registration
+              <Link to="/admin-register" className="auth-link admin-link">
+                Register as Administrator →
               </Link>
             </div>
           </form>
 
           <div className="auth-footer">
-            © 2025 FitX Fitness. Your transformation begins here.
+            © 2025 FitX Fitness - Transform Your Body, Transform Your Life
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Register;

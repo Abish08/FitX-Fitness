@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../Styles/Login.css';
+// Import your images
+import FitxLogo from '../assets/image/FitxLogo.jpg';
+import GymBackground from '../assets/image/gymbackground.jpg';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+
+  // Set CSS custom property for background image
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--gym-background-url', `url(${GymBackground})`);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,7 +40,7 @@ const ForgotPassword = () => {
 
   if (sent) {
     return (
-      <div className="auth-background">
+      <div className="auth-background with-gym-bg">
         <div className="auth-container">
           <div className="auth-card">
             <div className="auth-header">
@@ -49,7 +57,7 @@ const ForgotPassword = () => {
                 If you don't see it, check your spam folder.
               </p>
 
-              <div style={{ marginTop: '2rem' }}>
+              <div className="forgot-password-actions">
                 <button 
                   onClick={handleResend}
                   disabled={loading}
@@ -63,7 +71,7 @@ const ForgotPassword = () => {
                 </Link>
               </div>
 
-              <div className="message message-info" style={{ marginTop: '2rem' }}>
+              <div className="message message-info forgot-password-security">
                 🔒 For security, this link will expire in 24 hours
               </div>
             </div>
@@ -78,7 +86,7 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="auth-background">
+    <div className="auth-background with-gym-bg">
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
@@ -132,7 +140,7 @@ const ForgotPassword = () => {
             </div>
           </form>
 
-          <div className="message message-info">
+          <div className="message message-info forgot-password-security">
             🔒 We take your security seriously. Reset links are encrypted and expire automatically.
           </div>
 

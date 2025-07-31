@@ -6,7 +6,7 @@ import '../Styles/Login.css';
 import FitxLogo from '../assets/image/FitxLogo.jpg';
 import GymBackground from '../assets/image/gymbackground.jpg';
 
-const UserLogin = () => {
+const AdminLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const UserLogin = () => {
     document.documentElement.style.setProperty('--gym-background-url', `url(${GymBackground})`);
   }, []);
 
-  // Check if user is already logged in using AuthContext
+  // Check if admin is already logged in using AuthContext
   useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === 'admin') {
@@ -36,11 +36,11 @@ const UserLogin = () => {
     if (error) clearError();
   };
 
-  // Fill test credentials
-  const fillTestCredentials = () => {
+  // Fill admin test credentials
+  const fillAdminCredentials = () => {
     setFormData({
-      email: 'abish@gmail.com',
-      password: 'abish1234'
+      email: 'ayush@gmail.com',
+      password: 'ayush1234'
     });
   };
 
@@ -48,7 +48,7 @@ const UserLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    console.log('🔐 User login attempt:', formData.email);
+    console.log('🔐 Admin login attempt:', formData.email);
     
     try {
       const result = await login({
@@ -57,21 +57,21 @@ const UserLogin = () => {
       });
 
       if (result.success) {
-        console.log('✅ User login successful:', result.user);
+        console.log('✅ Admin login successful:', result.user);
         
-        // Check user role and redirect accordingly
+        // Check if user is admin
         if (result.user.role === 'admin') {
-          console.log('🔑 Admin role detected, redirecting to admin dashboard');
+          console.log('🔑 Admin role confirmed, redirecting to admin dashboard');
           navigate('/admin-dashboard');
         } else {
-          console.log('👤 User role confirmed, redirecting to user dashboard');
+          console.log('❌ User is not admin, redirecting to user dashboard');
           navigate('/dashboard');
         }
       } else {
-        console.log('❌ User login failed:', result.error);
+        console.log('❌ Admin login failed:', result.error);
       }
     } catch (error) {
-      console.error('❌ User login error:', error);
+      console.error('❌ Admin login error:', error);
     }
   };
 
@@ -81,8 +81,8 @@ const UserLogin = () => {
         <div className="auth-card">
           <div className="auth-header">
             <img src={FitxLogo} alt="FitX Logo" className="fitx-logo-img" />
-            <h1 className="auth-title">Welcome Back</h1>
-            <p className="auth-subtitle">Sign in to your FitX account</p>
+            <h1 className="auth-title">Admin Access</h1>
+            <p className="auth-subtitle">Platform Management Portal</p>
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -93,12 +93,12 @@ const UserLogin = () => {
             )}
 
             <div className="message message-info">
-              <strong>Demo User Account:</strong><br/>
-              ⚡ abish@gmail.com<br/>
-              🔑 abish1234
+              <strong>Demo Admin Account:</strong><br/>
+              ⚡ ayush@gmail.com<br/>
+              🔑 ayush1234
               <button
                 type="button"
-                onClick={fillTestCredentials}
+                onClick={fillAdminCredentials}
                 style={{
                   display: 'block',
                   margin: '8px auto 0',
@@ -112,18 +112,18 @@ const UserLogin = () => {
                   fontWeight: '600'
                 }}
               >
-                Fill Test Data
+                Fill Admin Data
               </button>
             </div>
 
             <div className="form-group">
-              <label className="form-label">Email Address</label>
+              <label className="form-label">Admin Email</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="Enter your email address"
+                placeholder="Enter admin email address"
                 className="form-input"
                 required
                 disabled={isLoading}
@@ -131,14 +131,14 @@ const UserLogin = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Password</label>
+              <label className="form-label">Admin Password</label>
               <div className="password-input-container">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  placeholder="Enter your password"
+                  placeholder="Enter admin password"
                   className="form-input password-input"
                   required
                   disabled={isLoading}
@@ -159,30 +159,24 @@ const UserLogin = () => {
               disabled={isLoading || !formData.email || !formData.password} 
               className="auth-btn btn-primary"
             >
-              {isLoading ? 'Signing In...' : 'Sign In as User'}
+              {isLoading ? 'Signing In...' : 'Access Admin Panel'}
             </button>
 
             <div className="auth-links">
-              <Link to="/forgot-password" className="auth-link">
-                Forgot your password?
+              <Link to="/admin-register" className="auth-link">
+                Register as Administrator
               </Link>
             </div>
 
             <div className="auth-links">
-              <Link to="/register" className="auth-link">
-                Don't have an account? Sign up here
-              </Link>
-            </div>
-
-            <div className="auth-links">
-              <Link to="/admin-login" className="auth-link admin-link">
-                Administrator Access →
+              <Link to="/login" className="auth-link">
+                ← Regular User Login
               </Link>
             </div>
           </form>
 
           <div className="auth-footer">
-            © 2025 FitX Fitness - Transform Your Body, Transform Your Life
+            © 2025 FitX Fitness - Administrator Portal
           </div>
         </div>
       </div>
@@ -190,4 +184,4 @@ const UserLogin = () => {
   );
 };
 
-export default UserLogin;
+export default AdminLogin;
