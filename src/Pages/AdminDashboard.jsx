@@ -89,25 +89,21 @@ const AdminDashboard = () => {
     { title: 'System Settings', description: 'Configure platform settings', icon: '⚙️', action: 'settings' }
   ];
 
-  // Handle quick actions with proper navigation
   const handleQuickAction = (action) => {
-    switch(action) {
-      case 'exercises':
-        navigate('/admin/exercise-library');
-        break;
-      case 'settings':
-        navigate('/admin/system-settings');
-        break;
-      case 'users':
-        setActiveTab('users');
-        break;
-      case 'workouts':
-        setActiveTab('content');
-        break;
-      default:
-        setActiveTab('overview');
-    }
-  };
+  switch(action) {
+    case 'users':
+      navigate('/admin/users'); // ✅ Go to real user management
+      break;
+    case 'exercises':
+      navigate('/admin/exercise-library');
+      break;
+    case 'settings':
+      navigate('/admin/system-settings');
+      break;
+    default:
+      navigate('/admin-dashboard');
+  }
+};
 
   // CRUD Operations
   const handleUserAction = (userId, action) => {
@@ -148,20 +144,20 @@ const AdminDashboard = () => {
               <span className="tab-icon">📊</span>
               <span className="tab-text">Overview</span>
             </button>
-            <button 
+            {/* <button 
               className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
               onClick={() => setActiveTab('users')}
             >
               <span className="tab-icon">👥</span>
               <span className="tab-text">Users</span>
-            </button>
-            <button 
+            </button> */}
+            {/* <button 
               className={`admin-tab ${activeTab === 'content' ? 'active' : ''}`}
               onClick={() => setActiveTab('content')}
             >
               <span className="tab-icon">📋</span>
               <span className="tab-text">Content</span>
-            </button>
+            </button> */}
           </nav>
 
           {/* Admin User Section */}
