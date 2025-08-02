@@ -14,13 +14,13 @@ const AdminDashboard = () => {
     console.log('🔍 Auth state:', { isAuthenticated, isLoading, isAdmin, user: user?.email });
     
     if (!isLoading && (!isAuthenticated || !isAdmin)) {
-      console.log('❌ Access denied, redirecting to admin login');
+      console.log(' Access denied, redirecting to admin login');
       navigate('/admin-login', { replace: true });
     }
   }, [isAuthenticated, isLoading, isAdmin, navigate]);
 
   const handleLogout = () => {
-    console.log('🚪 Admin logout clicked');
+    console.log('Admin logout clicked');
     if (window.confirm('Are you sure you want to logout?')) {
       logout();
     }
@@ -144,20 +144,7 @@ const AdminDashboard = () => {
               <span className="tab-icon">📊</span>
               <span className="tab-text">Overview</span>
             </button>
-            {/* <button 
-              className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
-              onClick={() => setActiveTab('users')}
-            >
-              <span className="tab-icon">👥</span>
-              <span className="tab-text">Users</span>
-            </button> */}
-            {/* <button 
-              className={`admin-tab ${activeTab === 'content' ? 'active' : ''}`}
-              onClick={() => setActiveTab('content')}
-            >
-              <span className="tab-icon">📋</span>
-              <span className="tab-text">Content</span>
-            </button> */}
+            
           </nav>
 
           {/* Admin User Section */}

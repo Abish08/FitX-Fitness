@@ -58,12 +58,12 @@ const AdminExerciseLibrary = () => {
   const fetchExercises = async () => {
     try {
       setLoading(true);
-      console.log('🔄 Fetching exercises from backend...');
+      console.log(' Fetching exercises from backend...');
       
       const response = await axios.get('http://localhost:5000/api/exercises');
       
       if (response.data.success) {
-        console.log(`✅ Loaded ${response.data.data.length} exercises from backend`);
+        console.log(` Loaded ${response.data.data.length} exercises from backend`);
         
         // Transform backend data to match our component structure
         const transformedExercises = response.data.data.map(exercise => ({
@@ -94,7 +94,7 @@ const AdminExerciseLibrary = () => {
       }
       setError(null);
     } catch (err) {
-      console.error('❌ Error fetching exercises:', err);
+      console.error(' Error fetching exercises:', err);
       setError('Failed to load exercises from server');
     } finally {
       setLoading(false);
@@ -181,7 +181,7 @@ const AdminExerciseLibrary = () => {
         return;
       }
 
-      console.log('📝 Creating new exercise:', exerciseForm);
+      console.log('Creating new exercise:', exerciseForm);
 
       const config = {
         headers: {
@@ -202,7 +202,7 @@ const AdminExerciseLibrary = () => {
         closeModal('add');
       }
     } catch (err) {
-      console.error('❌ Error creating exercise:', err);
+      console.error(' Error creating exercise:', err);
       if (err.response?.status === 401) {
         alert('Authentication failed. Please login again.');
         navigate('/admin-login');
@@ -220,7 +220,7 @@ const AdminExerciseLibrary = () => {
         return;
       }
 
-      console.log('📝 Updating exercise:', currentExercise.id);
+      console.log(' Updating exercise:', currentExercise.id);
 
       const config = {
         headers: {
@@ -241,7 +241,7 @@ const AdminExerciseLibrary = () => {
         closeModal('edit');
       }
     } catch (err) {
-      console.error('❌ Error updating exercise:', err);
+      console.error(' Error updating exercise:', err);
       if (err.response?.status === 401) {
         alert('Authentication failed. Please login again.');
         navigate('/admin-login');
@@ -263,7 +263,7 @@ const AdminExerciseLibrary = () => {
         return;
       }
 
-      console.log('🗑️ Deleting exercise:', id);
+      console.log(' Deleting exercise:', id);
 
       const config = {
         headers: {
@@ -282,7 +282,7 @@ const AdminExerciseLibrary = () => {
         setSelectedExercises(selectedExercises.filter(exId => exId !== id));
       }
     } catch (err) {
-      console.error('❌ Error deleting exercise:', err);
+      console.error(' Error deleting exercise:', err);
       alert('Failed to delete exercise: ' + (err.response?.data?.message || err.message));
     }
   };
