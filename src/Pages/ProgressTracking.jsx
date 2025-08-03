@@ -8,11 +8,11 @@ const ProgressTracking = () => {
   const [userStats, setUserStats] = useState({
     currentWeight: 165,
     goalWeight: 155,
-    height: 70, // inches
+    height: 70, 
     bodyFat: 18.5,
     muscleMass: 142,
-    waterIntake: 6, // glasses today
-    waterGoal: 8, // glasses per day
+    waterIntake: 6, 
+    waterGoal: 8, 
     sleepHours: 7.5,
     sleepGoal: 8,
     dailySteps: 8500,
@@ -36,14 +36,13 @@ const ProgressTracking = () => {
     thighs: 24
   });
 
-  // Calculate BMI
+ 
   const calculateBMI = (weight, height) => {
     const heightInMeters = height * 0.0254;
     const weightInKg = weight * 0.453592;
     return (weightInKg / (heightInMeters * heightInMeters)).toFixed(1);
   };
 
-  // Calculate weight progress
   const getWeightProgress = () => {
     const totalToLose = userStats.currentWeight - userStats.goalWeight;
     const currentProgress = userStats.currentWeight - userStats.goalWeight;
